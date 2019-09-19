@@ -1,0 +1,23 @@
+
+What Web Application security mechanisms are involved in your topology? What security mechanisms would ideally be involved?
+
+The defense mechanisms we will be implementing in our project would cover the following core components:
+
+1 - Handling user access to the application’s data and functionality to prevent users from gaining unauthorized access, using:
+Authentication.
+Session management.
+
+2 - Handling user input to the application’s functions to prevent malformed input from causing undesirable behavior, using:
+Sanitization, almost always good if implemented right.
+Reject Known Bad inputs as what WAFs do, has its advantages and disadvantages.
+
+3 - Handling attackers to ensure that the application behaves appropriately when being directly targeted:
+Handling errors, it should never return any system-generated messages or other debug information in its responses.
+Maintaining audit logs, some key events should be logged. Events like, successful
+and failed login, and change of password.
+
+
+
+What testing framework did you choose and why?
+
+The testing framework chosen is Python using Pytest.
