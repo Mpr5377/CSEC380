@@ -1,0 +1,20 @@
+dist: bionic
+
+language: python
+
+python:
+  - '3.7'
+
+services:
+  - docker
+
+before_install:
+  - docker-compose up --build -d
+  - pip install -r requirements.txt
+
+script:
+  - pytest test.py
+  - flake8 . --count --show-source --statistics
+
+after_script:
+  - docker-compose down
