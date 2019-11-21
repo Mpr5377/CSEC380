@@ -2,10 +2,7 @@ import pytest
 
 
 def test_act3_authentication():
-    x = 5
-    y = 5
-
-    assert x == y
+    pass
     # TODO
     # Test 1: Logs into the application successfully
 
