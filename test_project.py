@@ -1,5 +1,4 @@
 import pytest
-import requests
 
 
 def test_act3_authentication():
