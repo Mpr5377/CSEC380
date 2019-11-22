@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="/static/style.css" type="text/css">
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+table, th, td {
+  border: 0px;
+  }
+</style>
+
+<title>TigerTube</title>
+
+</head>
+
+<body>
+
+
+<ul>
+  <li><a href="/home">Home</a></li>
+  <li><a href="/upload">Upload</a></li>
+  <li><a href="/view">View</a></li>
+  <li style="float:right"><a class="active" href="/logout">Logout</a></li>
+</ul>
+
+<center><h1>Welcome {{ username }}</h1></center>
+<br>
+<br>
+<h3>My videos:</h3>
+<br>
+<br>
+
+<script type=text/javascript>
+$(document).ready(function(){
+    var html = '<wl>';
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:5000/getvideos",
+	contentType: "application/json",
+        dataType: 'json',
+	data: JSON.stringify({username: "{{ username }}"}),
+        success: function(data) {
+		for (i=0; i<data.length; i++) {
+			html += '<li><a href="/vids/'+data[i]['VideoTitle']+'">' + data[i]['VideoTitle'] + '</a><a href="/del/'+data[i]['VID']+'"><img alt="Delete" src="/static/images/delete.png" width="24" height="24"></a></li>'
+		}
+		html += '</wl>'
+		$("#videos").append(html);
+        },
+        error: function(error){
+            console.log("Error: " + JSON.stringify(error));
+        }
+    });
+});
+</script>
+
+<div id="videos"></div>
+
+</body>
+</html>

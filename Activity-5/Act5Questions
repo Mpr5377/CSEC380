@@ -1,0 +1,6 @@
+How would you fix your code so that these issues were no longer present?
+We recommend using Pymysql since it doesn't allow stacked command statements.
+
+What are the limitations, if any that, of the SQL Injection issues you’ve included?
+The blind injection is blind; we cannot print the content of the database. The classical SQL injection is fully functional, we can exfiltrate all the data on the database. 
+

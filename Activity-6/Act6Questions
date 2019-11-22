@@ -1,0 +1,10 @@
+How would you fix your code so that this issue is no longer present?
+
+One possible way to fix this vulnerability is not to use GET requests.
+
+How does your test demonstrate SSRF as opposed to just accessing any old endpoint?
+
+After requesting the 
+http://10.1.1.1:5000/upload?linkupload=http://10.1.1.1/<name>.mp4
+We can verify that it is actually functional by visiting; however, we need to make sure that <name> is a long random string, so that possibility of having an old endpoint is impossible:
+http://10.1.1.1:5000/vids/<name>.mp4

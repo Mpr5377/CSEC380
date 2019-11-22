@@ -1,0 +1,82 @@
+<link rel="stylesheet" href="/static/style.css" type="text/css">
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<style>
+table, th, td {
+  border: 0px;
+  }
+</style>
+
+<title>TigerTube</title>
+
+</head>
+<body>
+
+
+<ul>
+  <li><a href="/home">Home</a></li>
+  <li><a href="/upload">Upload</a></li>
+  <li><a href="/view">View</a></li>
+    <li style="float:right"><a class="active" href="/logout">Logout</a></li>
+</ul>
+
+        <br>
+        <h3>View all videos:</h3>
+        <br>
+
+<script type=text/javascript>
+$(document).ready(function(){
+    var html = '<wl>';
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:5000/getvideos",
+	contentType: "application/json",
+        dataType: 'json',
+	data: JSON.stringify({username: "{{ username }}"}),
+        success: function(data) {
+		for (i=0; i<data.length; i++) {
+			console.log(data[i]);
+
+			html += '<li><a href="/vids/'+data[i]['VideoTitle']+'">' + data[i]['VideoTitle'] + '</a><a href="/del/'+data[i]['VID']+'"><img alt="Delete" src="/static/images/delete.png" width="24" height="24"></a></li>'
+		}
+		html += '</wl>'
+		$("#videos").append(html);
+        },
+        error: function(error){
+            console.log("Error: " + JSON.stringify(error));
+        }
+    });
+});
+</script>
+<script type=text/javascript>
+$(document).ready(function(){
+    var html = '<wl>';
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:5000/getvideos2",
+        contentType: "application/json",
+        dataType: 'json',
+        data: JSON.stringify({username: "{{ username }}"}),
+        success: function(data) {
+                for (i=0; i<data.length; i++) {
+			html += '<li><a href="/vids/'+data[i]['VideoTitle']+'">' + data[i]['VideoTitle'] + ' - Owner:' + data[i]['VideoOwner'] + '</a></li><br>'
+                }
+                html += '</wl>';
+                $("#videos2").append(html);
+
+        },
+        error: function(error){
+            console.log("Error: " + JSON.stringify(error));
+        }
+    });
+});
+</script>
+
+<div id="videos"></div>
+<div id="videos2"></div>
+
+</body>
+</html>

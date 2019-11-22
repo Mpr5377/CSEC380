@@ -1,0 +1,3 @@
+How would you fix your code so that this issue is no longer present?
+
+We don't recommend sing calls that execute BASH nor any kind of language system call.We only recommend using specific methods like os.remove in Python or unlink($myFile) in PHP. We also recommend including input sanitization methods to prevent users from escaping input fields and injecting the backend.

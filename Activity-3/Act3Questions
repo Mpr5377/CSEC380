@@ -1,0 +1,23 @@
+How do you ensure that users that navigate to the protected pages cannot bypass authentication requirements?
+
+Session management is the key to this problem. We guaranteed that users cannot navigate to protected paths by generating a random long new session when a user logins in. Which limits other unauthenticated users from accessing the paths that are locked behind our authentication. 
+
+How do you protect against session fixation?
+
+Session fixation can be protected against by generating a unique, unpredictable session with an expiration date for each user when they log in. 
+ 
+How do you ensure that if your database gets stolen passwords aren’t exposed?
+
+We are using Werkzeug to salt and hash passwords before storing them.  
+ 
+How do you prevent password brute force?
+
+We implemented a rate limit for each IP.
+  
+How do you prevent username enumeration?
+
+The rate limit implemented is used for each login so that attackers can brute force neither passwords nor usernames.
+
+What happens if your sessionID is predictable, how do you prevent that?
+
+We can do different things like, for example generating two sessions and using them as inputs on a hashing method like SHA-256, which will generate a very hard to guess session. We can also add additional functionalities like linking sessions with IPs. 
