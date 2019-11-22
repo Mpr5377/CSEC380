@@ -86,6 +86,10 @@ def test_act7_command_injection():
     login = session.post("http://localhost:5000/login", data=credentials)
     assert login.status_code == 200 and "Welcome" in login.text
 
+    # Uploads a new video
+    file = {'file': open("Test_Videos/SampleVideo_1280x720_1mb.mp4", "rb")}
+    file_upload = session.post("http://localhost:5000/upload", files=file)
+    assert file_upload.status_code == 200
 
 
 if __name__ == '__main__':
