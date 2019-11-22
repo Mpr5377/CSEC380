@@ -1,3 +1,7 @@
+Link to the test cases:
+
+https://github.com/M507/CSEC380/blob/master/test_project.py
+
 How do you ensure that users that navigate to the protected pages cannot bypass authentication requirements?
 
 Session management is the key to this problem. We guaranteed that users cannot navigate to protected paths by generating a random long new session when a user logins in. Which limits other unauthenticated users from accessing the paths that are locked behind our authentication. 
