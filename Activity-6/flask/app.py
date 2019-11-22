@@ -44,14 +44,18 @@ cors = CORS(app)
 # Create users
 user2 = 'admin2'
 user2hashedpass = generate_password_hash('admin2')
-mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, \
+mysqlConnCursor.execute(
+    "INSERT INTO users(Username, HashedPass, VideoCount, \
     CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user2,
-    user2hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
+    user2hashedpass, datetime.datetime.now().strftime('%Y-%m-%d'))
+)
 user1 = 'admin'
 user1hashedpass = generate_password_hash('admin')
-mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, \
+mysqlConnCursor.execute(
+        "INSERT INTO users(Username, HashedPass, VideoCount, \
         CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user1,
-        user1hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
+        user1hashedpass, datetime.datetime.now().strftime('%Y-%m-%d'))
+)
 mysqlConnCursor.close()
 mysqlConn.commit()
 mysqlConn.close()
@@ -83,28 +87,34 @@ def upload():
                 with open(destination, 'wb') as f:
                     if not localfile.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
-                        return render_template('upload.html', \
-                            username=session['username'])
+                        return render_template(
+                            'upload.html',
+                            username=session['username']
+                        )
                     destination = "/".join([target, localfile])
                     shutil.copyfileobj(r.raw, f)
                     mysqlConnCursor.execute(
                         "SELECT UID FROM users WHERE \
                         Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
-                    mysqlConnCursor.execute("INSERT INTO video(UID, \
-                     VideoTitle, VideoOwner, VideoURL, DateUploaded) VALUES \
-                     ('{}', '{}', '{}', '{}', '{}')".format(UID[0], \
+                    mysqlConnCursor.execute(
+                        "INSERT INTO video(UID, \
+                        VideoTitle, VideoOwner, VideoURL, DateUploaded) \
+                        VALUES \
+                        ('{}', '{}', '{}', '{}', '{}')".format(UID[0], \
                         localfile, str(destination), session['username'],
-                                            datetime.datetime.now().strftime(
-                                                                '%Y-%m-%d')))
-                    mysqlConnCursor.execute("UPDATE users SET \
+                        datetime.datetime.now().strftime('%Y-%m-%d'))
+                    )
+                    mysqlConnCursor.execute(
+                        "UPDATE users SET \
                         VideoCount = VideoCount + \
                         1 WHERE Username = \
-                        '{}'".format(str(session['username'])))
+                        '{}'".format(str(session['username']))
+                    )
                     mysqlConn.commit()
                     mysqlConnCursor.close()
                     mysqlConn.close()
-                    return render_template('home.html', \
+                    return render_template('home.html',
                         username=session['username'])
         if request.method == 'POST':
             target = os.path.join(APP_ROOT, "static")
@@ -116,62 +126,80 @@ def upload():
                 with open(destination, 'wb') as f:
                     if not localfile.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
-                        return render_template('upload.html', \
-                            username=session['username'])
+                        return render_template(
+                            'upload.html', \
+                            username=session['username']
+                        )
                     destination = "/".join([target, localfile])
                     shutil.copyfileobj(r.raw, f)
                     mysqlConnCursor.execute("SELECT UID FROM users \
                         WHERE Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
-                    mysqlConnCursor.execute("INSERT \
+                    mysqlConnCursor.execute(
+                        "INSERT \
                         INTO video(UID, VideoTitle, VideoOwner, \
                         VideoURL, DateUploaded) VALUES \
-                            ('{}', '{}', '{}', '{}', '{}')".format(UID[0], \
-                                localfile, \
-                                str(destination), session['username'],
-                                datetime.datetime.now().strftime('%Y-%m-%d')))
-                    mysqlConnCursor.execute("UPDATE users SET \
+                        ('{}', '{}', '{}', '{}', '{}')".format(UID[0],
+                        localfile,
+                        str(destination), session['username'],
+                        datetime.datetime.now().strftime('%Y-%m-%d'))
+                    )
+                    mysqlConnCursor.execute(
+                        "UPDATE users SET \
                         VideoCount = VideoCount + \
-                            1 WHERE Username = \
-                            '{}'".format(str(session['username'])))
+                        1 WHERE Username = \
+                        '{}'".format(str(session['username']))
+                    )
                     mysqlConn.commit()
                     mysqlConnCursor.close()
                     mysqlConn.close()
-                    return render_template('home.html', \
-                        username=session['username'])
+                    return render_template(
+                        'home.html',
+                        username=session['username']
+                    )
             else:
                 for f in request.files.getlist("file"):
                     filename = f.filename
                     if not filename.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
-                        return render_template('upload.html', \
-                            username=session['username'])
+                        return render_template(
+                            'upload.html',
+                            username=session['username']
+                        )
                     destination = "/".join([target, filename])
                     f.save(destination)
                     mysqlConnCursor.execute("SELECT UID FROM \
                     users WHERE Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
-                    mysqlConnCursor.execute("INSERT INTO \
+                    mysqlConnCursor.execute(
+                        "INSERT INTO \
                         video(UID, VideoTitle, VideoURL, \
                         VideoOwner, DateUploaded) VALUES \
-                            ('{}', '{}', '{}', '{}', \
-                            '{}')".format(UID[0], filename, \
-                            str(destination), session['username'],
-                            datetime.datetime.now().strftime('%Y-%m-%d')))
-                    mysqlConnCursor.execute("UPDATE users SET \
+                        ('{}', '{}', '{}', '{}', \
+                        '{}')".format(UID[0], filename,
+                        str(destination), session['username'],
+                        datetime.datetime.now().strftime('%Y-%m-%d'))
+                    )
+                    mysqlConnCursor.execute(
+                        "UPDATE users SET \
                         VideoCount = VideoCount + \
-                            1 WHERE \
-                            Username = '{}'".format(\
-                                str(session['username'])))
+                        1 WHERE \
+                        Username = '{}'".format(
+                        str(session['username']))
+                    )
                     mysqlConn.commit()
                     mysqlConnCursor.close()
                     mysqlConn.close()
-                    return render_template('upload.html', \
-                        username=session['username'])
+                    return render_template(
+                        'upload.html',
+                        username=session['username']
+                    )
         mysqlConnCursor.close()
         mysqlConn.close()
-        return render_template('upload.html', \
-            username=session['username'])
+        return render_template(
+            'upload.html',
+            username=session['username']
+            )
     else:
         mysqlConnCursor.close()
         mysqlConn.close()
@@ -201,11 +229,11 @@ def login():
         username = request.form['username']
         password = request.form['password']
         q = "SELECT HashedPass FROM users WHERE Username=" + \
-         "'" + str(username) + "'"
+            "'" + str(username) + "'"
         mysqlConnCursor.execute(q)
         userpass = mysqlConnCursor.fetchone()
         q = "SELECT Username FROM users WHERE Username=" + \
-         "'" + str(username) + "'"
+            "'" + str(username) + "'"
         mysqlConnCursor.execute(q)
         username = mysqlConnCursor.fetchone()
         username = str(username).replace('(', '').\
@@ -248,62 +276,80 @@ def homepage():
                 with open(destination, 'wb') as f:
                     if not localfile.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
-                        return render_template('home.html', \
-                            username = session['username'])
+                        return render_template(
+                            'home.html',
+                            username = session['username']
+                        )
                     destination = "/".join([target, localfile])
                     shutil.copyfileobj(r.raw, f)
-                    mysqlConnCursor.execute("SELECT UID FROM \
+                    mysqlConnCursor.execute(
+                        "SELECT UID FROM \
                         users WHERE \
-                        Username='{}'".format((session['username'])))
+                        Username='{}'".format((session['username']))
+                    )
                     UID = mysqlConnCursor.fetchone()
-                    mysqlConnCursor.execute("INSERT INTO \
+                    mysqlConnCursor.execute(
+                        "INSERT INTO \
                         video(UID, VideoTitle, VideoOwner, \
                         VideoURL, DateUploaded) VALUES \
                         ('{}', '{}', '{}', '{}', \
                         '{}')".format(UID[0], localfile, \
                         str(destination), session['username'], \
-                        datetime.datetime.now().strftime('%Y-%m-%d')))
-                    mysqlConnCursor.execute("UPDATE \
+                        datetime.datetime.now().strftime('%Y-%m-%d'))
+                    )
+                    mysqlConnCursor.execute(
+                        "UPDATE \
                         users SET VideoCount = VideoCount + \
                         1 WHERE Username = \
-                        '{}'".format(str(session['username'])))
+                        '{}'".format(str(session['username']))
+                    )
                     mysqlConn.commit()
                     mysqlConnCursor.close()
                     mysqlConn.close()
-                    return render_template('home.html', \
-                        username=session['username'])
+                    return render_template(
+                        'home.html',
+                        username=session['username']
+                    )
             else:
                 for f in request.files.getlist("file"):
                     filename = f.filename
                     if not filename.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
-                        return render_template('home.html', \
-                            username=session['username'])
+                        return render_template(
+                            'home.html',
+                            username=session['username']
+                        )
                     destination = "/".join([target, filename])
                     f.save(destination)
                     mysqlConnCursor.execute("SELECT \
                         UID FROM users WHERE \
                         Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
-                    mysqlConnCursor.execute("INSERT INTO \
+                    mysqlConnCursor.execute(
+                        "INSERT INTO \
                         video(UID, VideoTitle, VideoURL, \
                         VideoOwner, DateUploaded) VALUES \
                         ('{}', '{}', '{}', '{}', \
-                        '{}')".format(UID[0], filename, \
-                        str(destination), session['username'], \
-                        datetime.datetime.now().strftime('%Y-%m-%d')))
-                    mysqlConnCursor.execute("UPDATE users SET \
+                        '{}')".format(UID[0], filename,
+                        str(destination), session['username'],
+                        datetime.datetime.now().strftime('%Y-%m-%d'))
+                    )
+                    mysqlConnCursor.execute(
+                        "UPDATE users SET \
                         VideoCount = VideoCount + \
                         1 WHERE Username = \
-                        '{}'".format(str(session['username'])))
+                        '{}'".format(str(session['username']))
+                    )
                     mysqlConn.commit()
                     mysqlConnCursor.close()
                     mysqlConn.close()
-                    return render_template('home.html', \
-                        username = session['username'])
+                    return render_template(
+                        'home.html',
+                        username=session['username']
+                    )
         mysqlConnCursor.close()
         mysqlConn.close()
-        return render_template('home.html', username = session['username'])
+        return render_template('home.html', username=session['username'])
     else:
         mysqlConnCursor.close()
         mysqlConn.close()
@@ -322,8 +368,10 @@ def getcount():
                 username = request.args.post('username')
             if request.method == 'GET':
                 username = request.args.get('username')
-            mysqlConnCursor.execute("SELECT VideoCount \
-                FROM users WHERE Username='{}'".format(username))
+            mysqlConnCursor.execute(
+                "SELECT VideoCount \
+                FROM users WHERE Username='{}'".format(username)
+            )
             rows = mysqlConnCursor.fetchall()
             row_headers = [x[0] for x in mysqlConnCursor.description]
             json_data = []
@@ -345,13 +393,17 @@ def getvideos():
     if 'username' in session:
         username = request.get_json()
         username = username['username']
-        mysqlConnCursor.execute("SELECT UID \
-            FROM users WHERE Username='{}'".format(username))
+        mysqlConnCursor.execute(
+            "SELECT UID \
+            FROM users WHERE Username='{}'".format(username)
+        )
         UID = mysqlConnCursor.fetchone()
         if "'" in str(UID[0]):
             UID[0] = UID[0].split("'")[0]
-        mysqlConnCursor.execute("SELECT * FROM \
-            video WHERE UID={}".format(UID[0]))
+        mysqlConnCursor.execute(
+            "SELECT * FROM \
+            video WHERE UID={}".format(UID[0])
+        )
         rows = mysqlConnCursor.fetchall()
         row_headers = [x[0] for x in mysqlConnCursor.description]
         json_data = []
@@ -372,11 +424,15 @@ def getvideos2():
     if 'username' in session:
         username = request.get_json()
         username = username['username']
-        mysqlConnCursor.execute("SELECT UID \
-            FROM users WHERE Username='{}'".format(username))
+        mysqlConnCursor.execute(
+            "SELECT UID \
+            FROM users WHERE Username='{}'".format(username)
+        )
         UID = mysqlConnCursor.fetchone()
-        mysqlConnCursor.execute("SELECT * \
-            FROM video WHERE UID!={}".format(UID[0]))
+        mysqlConnCursor.execute(
+            "SELECT * \
+            FROM video WHERE UID!={}".format(UID[0])
+        )
         rows = mysqlConnCursor.fetchall()
         row_headers = [x[0] for x in mysqlConnCursor.description]
         json_data = []
@@ -402,14 +458,18 @@ def delete(VID):
             mysqlConnCursor.close()
             mysqlConn.close()
             return redirect(url_for('homepage'))
-        mysqlConnCursor.execute("SELECT VideoTitle \
-            FROM video WHERE VID={}".format(VID))
+        mysqlConnCursor.execute(
+            "SELECT VideoTitle \
+            FROM video WHERE VID={}".format(VID)
+        )
         tempFile = mysqlConnCursor.fetchone()
         tempFile = tempFile[0]
         if tempFile == '':
             return redirect(url_for('homepage'))
-        mysqlConnCursor.execute("SELECT VideoOwner \
-            FROM video WHERE VID={}".format(VID))
+        mysqlConnCursor.execute(
+            "SELECT VideoOwner \
+            FROM video WHERE VID={}".format(VID)
+        )
         tempVideoOwner = mysqlConnCursor.fetchone()[0]
         if session['username'] != tempVideoOwner:
             flash('Cannot delete video uploaded by someone else')
@@ -418,11 +478,15 @@ def delete(VID):
             mysqlConn.close()
             return redirect(url_for('homepage'))
         mysqlConnCursor.execute("DELETE FROM video WHERE VID={}".format(VID))
-        mysqlConnCursor.execute("SELECT UID FROM \
-            users WHERE Username='{}'".format((session['username'])))
+        mysqlConnCursor.execute(
+            "SELECT UID FROM \
+            users WHERE Username='{}'".format((session['username']))
+        )
         UID = mysqlConnCursor.fetchone()
-        mysqlConnCursor.execute("UPDATE users SET VideoCount = VideoCount - \
-                    1 WHERE Username = '{}'".format(str(session['username'])))
+        mysqlConnCursor.execute(
+            "UPDATE users SET VideoCount = VideoCount - \
+            1 WHERE Username = '{}'".format(str(session['username']))
+        )
         mysqlConn.commit()
         os.remove("static/"+tempFile)
         mysqlConnCursor.close()
