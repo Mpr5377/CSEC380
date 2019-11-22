@@ -35,12 +35,14 @@ def test_act4_content():
     file_upload = session.post("http://localhost:5000/upload", files=file)
     assert file_upload.status_code == 200
     # Access/Make sure video exists
-    video_check = session.get("http://localhost:5000/vids/SampleVideo_1280x720_1mb.mp4")
+    video_check = session.get("http://localhost:5000/vids/SampleVideo_1280x7"
+                              "20_1mb.mp4")
     assert video_check.status_code == 200
 
     # Deletes the video
     delete_video = session.get("http://localhost:5000/del/1")
     assert delete_video.status_code == 200
+
 
 def test_act5_sql_injection():
     pass
