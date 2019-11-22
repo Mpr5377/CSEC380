@@ -4,23 +4,24 @@ import requests
 
 def test_act3_authentication1():
     # Test 1: Logs into the application successfully
-    credentials = {'username':'admin','password':'admin'}
+    credentials = {'username': 'admin', 'password': 'admin'}
     login = requests.post("http://localhost:5000/login", data=credentials)
     assert login.status_code == 200 and "Welcome" in login.text
 
 
 def test_act3_authentication2():
     # Test 2: Tries to log into the application with wrong password and fails
-    credentials = {'username':'admin','password':'password'}
+    credentials = {'username':'admin', 'password': 'password'}
     login = requests.post("http://localhost:5000/login", data=credentials)
     assert login.status_code == 200 and "Welcome" in login.text
 
 
 def test_act3_authentication3():
     # Test 3: Tries to log into the application with wrong username and fails
-    credentials = {'username':'username','password':'admin'}
+    credentials = {'username': 'username', 'password': 'admin'}
     login = requests.post("http://localhost:5000/login", data=credentials)
     assert login.status_code == 200 and "Welcome" in login.text
+
 
 def test_act4_content():
     pass
@@ -62,4 +63,4 @@ def test_act7_command_injection():
 
 
 if __name__ == '__main__':
-    pytest.main(['-r','P'])
+    pytest.main(['-r', 'P'])
