@@ -182,40 +182,39 @@ def upload():
 
 @app.route("/view")
 def view():
-    mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
+    mysqlConn = pymysql.connect('mysql', 'root', 'root', 'db')
     mysqlConnCursor = mysqlConn.cursor()
     if 'username' in session:
-        return render_template('view.html', username = session['username'])
+        return render_template('view.html', username=session['username'])
     else:
         mysqlConnCursor.close()
         mysqlConn.close()
     return redirect(url_for('login'))
 
 
-@app.route("/login", methods=['GET','POST'])
+@app.route("/login", methods=['GET', 'POST'])
 @limiter.limit("14400/day;600/hour;1000/minute")
 def login():
     try:
-        mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
+        mysqlConn = pymysql.connect('mysql', 'root', 'root', 'db')
         mysqlConnCursor = mysqlConn.cursor()
         if request.method == 'GET':
             return home()
         username = request.form['username']
         password = request.form['password']
-        hashedpass = generate_password_hash(password)
         q = "SELECT HashedPass FROM users WHERE Username=" + \
-        "'" + str(username) + "'"
+         "'" + str(username) + "'"
         mysqlConnCursor.execute(q)
         userpass = mysqlConnCursor.fetchone()
         q = "SELECT Username FROM users WHERE Username=" + \
-        "'" + str(username) + "'"
+         "'" + str(username) + "'"
         mysqlConnCursor.execute(q)
         username = mysqlConnCursor.fetchone()
-        username = str(username).replace('(','').\
-        replace(')','').replace("'",'').replace(" ",'').replace(",",'')
+        username = str(username).replace('(', '').\
+         replace(')', '').replace("'", '').replace(" ", '').replace(",", '')
         mysqlConnCursor.close()
         mysqlConn.close()
-        if userpass == None:
+        if userpass is None:
             return invalid_user()
         elif check_password_hash(userpass[0], password):
             if "'" in username:
@@ -228,16 +227,16 @@ def login():
 
 
 
-@app.route("/logout", methods=['GET','POST'])
+@app.route("/logout", methods=['GET', 'POST'])
 def logout():
     session.pop('username', None)
     flash('You were logged out.')
     return redirect(url_for('login'))
 
 
-@app.route("/home", methods=['GET','POST'])
+@app.route("/home", methods=['GET', 'POST'])
 def homepage():
-    mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
+    mysqlConn = pymysql.connect('mysql', 'root', 'root', 'db')
     mysqlConnCursor = mysqlConn.cursor()
     if 'username' in session:
         if request.method == 'POST':
@@ -274,14 +273,14 @@ def homepage():
                     mysqlConnCursor.close()
                     mysqlConn.close()
                     return render_template('home.html', \
-                        username = session['username'])
+                        username=session['username'])
             else:
                 for f in request.files.getlist("file"):
                     filename = f.filename
                     if not filename.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
                         return render_template('home.html', \
-                            username = session['username'])
+                            username=session['username'])
                     destination = "/".join([target, filename])
                     f.save(destination)
                     mysqlConnCursor.execute("SELECT \
@@ -337,12 +336,13 @@ def getcount():
             return jsonify(json_data)
         except Exception as e:
             e = str(e)
-    #return home()
+            print(e)
+    # return home()
 
 
 @app.route('/getvideos', methods=['GET', 'POST'])
 def getvideos():
-    mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
+    mysqlConn = pymysql.connect('mysql', 'root', 'root', 'db')
     mysqlConnCursor = mysqlConn.cursor()
     if 'username' in session:
         username = request.get_json()
@@ -355,10 +355,10 @@ def getvideos():
         mysqlConnCursor.execute("SELECT * FROM \
             video WHERE UID={}".format(UID[0]))
         rows = mysqlConnCursor.fetchall()
-        row_headers=[x[0] for x in mysqlConnCursor.description]
-        json_data=[]
+        row_headers = [x[0] for x in mysqlConnCursor.description]
+        json_data = []
         for result in rows:
-            json_data.append(dict(zip(row_headers,result)))
+            json_data.append(dict(zip(row_headers, result)))
         mysqlConnCursor.close()
         mysqlConn.close()
         return jsonify(json_data)
@@ -369,7 +369,7 @@ def getvideos():
 
 @app.route('/getvideos2', methods=['GET', 'POST'])
 def getvideos2():
-    mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
+    mysqlConn = pymysql.connect('mysql', 'root', 'root', 'db')
     mysqlConnCursor = mysqlConn.cursor()
     if 'username' in session:
         username = request.get_json()
@@ -380,8 +380,8 @@ def getvideos2():
         mysqlConnCursor.execute("SELECT * \
             FROM video WHERE UID!={}".format(UID[0]))
         rows = mysqlConnCursor.fetchall()
-        row_headers=[x[0] for x in mysqlConnCursor.description]
-        json_data=[]
+        row_headers = [x[0] for x in mysqlConnCursor.description]
+        json_data = []
         for result in rows:
             json_data.append(dict(zip(row_headers,result)))
         mysqlConnCursor.close()
@@ -392,10 +392,9 @@ def getvideos2():
     return redirect(url_for('login'))
 
 
-
 @app.route('/del/<VID>')
 def delete(VID):
-    mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
+    mysqlConn = pymysql.connect('mysql', 'root', 'root', 'db')
     mysqlConnCursor = mysqlConn.cursor()
     mysqlConnCursor.execute("SELECT \
         VideoOwner FROM video WHERE VID={}".format(VID))
@@ -471,4 +470,3 @@ def invalid_password():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
-
