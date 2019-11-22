@@ -44,12 +44,14 @@ def test_act4_content():
     assert delete_video.status_code == 200
 
 
-def test_act5_sql_injection():
+def test_act5_classic_sql_injection():
     pass
-
     # TODO
     # Vulnerable to classic SQL
 
+
+def test_act5_blind_sql_injection():
+    pass
     # TODO
     # Vulnerable to blind SQL
 
