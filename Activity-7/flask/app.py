@@ -87,7 +87,7 @@ def upload():
                 for f in request.files.getlist("file"):
                     filename = f.filename
                     destination = "/".join([target, filename])
-                    print("Storing in database . . . " + destination, file=sys.stderr)
+                    print("Storing in database . . . " + destination, sys.stderr)
                     f.save(destination)
                     mysqlConnCursor.execute("SELECT UID FROM users WHERE Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
@@ -175,7 +175,7 @@ def homepage():
             link = request.form.get('linkupload', None)
             if link != "" and link is not None:
                 localfile = link.split('/')[-1]
-                print(localfile + link, file=sys.stderr)
+                print(localfile + link, sys.stderr)
                 destination = "/".join([target, localfile])
                 r = requests.get(link, stream=True)
                 with open(destination, 'wb') as f:
@@ -183,11 +183,11 @@ def homepage():
                         flash("Please upload a file with .mp4 extension.")
                         return render_template('home.html', username = session['username'])
                     destination = "/".join([target, localfile])
-                    print("Storing in database . . . " + destination, file=sys.stderr)
+                    print("Storing in database . . . " + destination, sys.stderr)
                     shutil.copyfileobj(r.raw, f)
                     mysqlConnCursor.execute("SELECT UID FROM users WHERE Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
-                    print(UID, file=sys.stderr)
+                    print(UID, sys.stderr)
                     mysqlConnCursor.execute("INSERT INTO video(UID, VideoTitle, VideoOwner, VideoURL, DateUploaded) VALUES \
                         ('{}', '{}', '{}', '{}', '{}')".format(UID[0], localfile, \
                         str(destination), session['username'], datetime.datetime.now().strftime('%Y-%m-%d')))
@@ -204,7 +204,7 @@ def homepage():
                         flash("Please upload a file with .mp4 extension.")
                         return render_template('home.html', username = session['username'])
                     destination = "/".join([target, filename])
-                    print("Storing in database . . . " + destination, file=sys.stderr)
+                    print("Storing in database . . . " + destination, sys.stderr)
                     f.save(destination)
                     mysqlConnCursor.execute("SELECT UID FROM users WHERE Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
@@ -244,7 +244,7 @@ def getcount():
             json_data = []
             for result in rows:
                 json_data.append(dict(zip(row_headers, result)))
-            print(json_data, file=sys.stderr)
+            print(json_data, sys.stderr)
             mysqlConnCursor.close()
             mysqlConn.close()
             return jsonify(json_data)
@@ -262,7 +262,7 @@ def getvideos():
     if 'username' in session:
         username = request.get_json()
         username = username['username']
-        print("username is " + str(username), file=sys.stderr)
+        print("username is " + str(username), sys.stderr)
         mysqlConnCursor.execute("SELECT UID FROM users WHERE Username='{}'".format(username))
         UID = mysqlConnCursor.fetchone()
         if "'" in str(UID[0]):
@@ -273,7 +273,7 @@ def getvideos():
         json_data=[]
         for result in rows:
             json_data.append(dict(zip(row_headers,result)))
-        print(json_data, file=sys.stderr)
+        print(json_data, sys.stderr)
         mysqlConnCursor.close()
         mysqlConn.close()
         return jsonify(json_data)
@@ -297,7 +297,7 @@ def getvideos2():
         json_data=[]
         for result in rows:
             json_data.append(dict(zip(row_headers,result)))
-        print(json_data, file=sys.stderr)
+        print(json_data, sys.stderr)
         mysqlConnCursor.close()
         mysqlConn.close()
         return jsonify(json_data)
@@ -311,7 +311,7 @@ def getvideos2():
 def delete(VID):
     mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
     mysqlConnCursor = mysqlConn.cursor()
-    print(VID, file=sys.stderr)
+    print(VID, sys.stderr)
     mysqlConnCursor.execute("SELECT VideoOwner FROM video WHERE VID={}".format(VID))
     tempVideoOwner = mysqlConnCursor.fetchone()[0]
     if 'username' in session:
@@ -322,7 +322,7 @@ def delete(VID):
         mysqlConnCursor.execute("SELECT VideoTitle FROM video WHERE VID={}".format(VID))
         fileNameTmp = mysqlConnCursor.fetchone()
         fileNameTmp = fileNameTmp[0]
-        print(fileNameTmp, file=sys.stderr)
+        print(fileNameTmp, sys.stderr)
         if fileNameTmp == '':
             return redirect(url_for('homepage'))
         mysqlConnCursor.execute("SELECT VideoOwner FROM video WHERE VID={}".format(VID))
