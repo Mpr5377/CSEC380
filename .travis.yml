@@ -9,11 +9,11 @@ services:
   - docker
 
 before_install:
-  - docker-compose -f Activity-2/Test/web/docker-compose.yml up --build -d
-  - pip install -r Activity-2/Test/requirements.txt
+  - docker-compose -f Activity-7/docker-compose.yml up --build -d
+  - pip install -r Activity-7/flask/requirements.txt
 
 script:
-  - pytest Activity-2/Test/test.py
+  - pytest test_project.py
   - flake8 . --count --show-source --statistics
 
 after_script:
