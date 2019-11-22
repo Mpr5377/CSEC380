@@ -80,10 +80,12 @@ def test_act6_ssrf():
 
 
 def test_act7_command_injection():
-    pass
+    # Logs into the account successfully
+    session = requests.session()
+    credentials = {'username': 'admin', 'password': 'admin'}
+    login = session.post("http://localhost:5000/login", data=credentials)
+    assert login.status_code == 200 and "Welcome" in login.text
 
-    # TODO
-    # Vulnerable to Command Injection
 
 
 if __name__ == '__main__':
