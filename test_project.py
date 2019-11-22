@@ -58,9 +58,11 @@ def test_act5_classic_sql_injection():
 
 
 def test_act5_blind_sql_injection():
-    pass
-    # TODO
-    # Vulnerable to blind SQL
+    # Logs into the account successfully
+    session = requests.session()
+    credentials = {'username': 'admin\' and 1 =2 --\'', 'password': 'admin'}
+    login = session.post("http://localhost:5000/login", data=credentials)
+    assert "The username used does not exist" in login.text
 
 
 def test_act6_ssrf():
