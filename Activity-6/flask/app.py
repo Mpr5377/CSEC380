@@ -46,13 +46,11 @@ user2 = 'admin2'
 user2hashedpass = generate_password_hash('admin2')
 mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, \
     CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user2,
-                         user2hashedpass, \
-                         datetime.datetime.now().strftime('%Y-%m-%d')))
+    user2hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
 user1 = 'admin'
 user1hashedpass = generate_password_hash('admin')
 mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, \
-                       CreationDate) VALUES ('{}', '{}', \
-                       0, '{}')".format(user1, \
+        CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user1,
         user1hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
 mysqlConnCursor.close()
 mysqlConn.commit()
