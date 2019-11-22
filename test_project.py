@@ -11,7 +11,7 @@ def test_act3_authentication1():
 
 def test_act3_authentication2():
     # Test 2: Tries to log into the application with wrong password and fails
-    credentials = {'username':'admin', 'password': 'password'}
+    credentials = {'username': 'admin', 'password': 'password'}
     login = requests.post("http://localhost:5000/login", data=credentials)
     assert login.status_code == 200 and "Welcome" in login.text
 
