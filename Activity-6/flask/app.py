@@ -1,10 +1,16 @@
-from flask import Flask, flash, jsonify, render_template, request, session, redirect, url_for
-from flask_cors import CORS, cross_origin
+from flask import Flask, flash, jsonify, render_template, request,\
+session, redirect, url_for
+from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import pymysql, datetime, requests, shutil, json, time, sys, os
+import pymysql
+import datetime
+import requests
+import shutil
+import time
+import os
 from werkzeug import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
+
 
 # Wait
 time.sleep(10)
@@ -16,11 +22,11 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__, static_url_path='/static', template_folder='templates')
 
 # Connect to MYSQL
-mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
+mysqlConn = pymysql.connect('mysql', 'root', 'root', 'db')
 mysqlConnCursor = mysqlConn.cursor()
 
 # Rate limit
-limiter = Limiter (
+limiter = Limiter(
     app,
     key_func=get_remote_address,
     default_limits=["28000 per day", "1000 per hour", "1000 per minute"]
@@ -38,10 +44,14 @@ cors = CORS(app)
 # Create users
 user2 = 'admin2'
 user2hashedpass = generate_password_hash('admin2')
-mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user2, user2hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
+mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, \
+    CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user2, \
+        user2hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
 user1 = 'admin'
 user1hashedpass = generate_password_hash('admin')
-mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user1, user1hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
+mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, \
+    CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user1, \
+        user1hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
 mysqlConnCursor.close()
 mysqlConn.commit()
 mysqlConn.close()
@@ -56,9 +66,10 @@ mysqlConn.close()
 def home():
     return render_template('login.html')
 
-@app.route("/upload", methods=['GET','POST'])
+
+@app.route("/upload", methods=['GET', 'POST'])
 def upload():
-    mysqlConn= pymysql.connect('mysql', 'root', 'root', 'db')
+    mysqlConn = pymysql.connect('mysql', 'root', 'root', 'db')
     mysqlConnCursor = mysqlConn.cursor()
     if 'username' in session:
         getlink = request.form.get('linkupload', None)
@@ -72,23 +83,29 @@ def upload():
                 with open(destination, 'wb') as f:
                     if not localfile.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
-                        return render_template('upload.html', username=session['username'])
+                        return render_template('upload.html', \
+                            username=session['username'])
                     destination = "/".join([target, localfile])
                     shutil.copyfileobj(r.raw, f)
                     mysqlConnCursor.execute(
-                        "SELECT UID FROM users WHERE Username='{}'".format((session['username'])))
+                        "SELECT UID FROM users WHERE \
+                        Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
-                    mysqlConnCursor.execute("INSERT INTO video(UID, VideoTitle, VideoOwner, VideoURL, DateUploaded) VALUES \
-                                        ('{}', '{}', '{}', '{}', '{}')".format(UID[0], localfile, \
-                                                                               str(destination), session['username'],
-                                                                               datetime.datetime.now().strftime(
-                                                                                   '%Y-%m-%d')))
-                    mysqlConnCursor.execute("UPDATE users SET VideoCount = VideoCount + \
-                                        1 WHERE Username = '{}'".format(str(session['username'])))
+                    mysqlConnCursor.execute("INSERT INTO video(UID, \
+                     VideoTitle, VideoOwner, VideoURL, DateUploaded) VALUES \
+                     ('{}', '{}', '{}', '{}', '{}')".format(UID[0], \
+                        localfile, str(destination), session['username'],
+                                            datetime.datetime.now().strftime(
+                                                                '%Y-%m-%d')))
+                    mysqlConnCursor.execute("UPDATE users SET \
+                        VideoCount = VideoCount + \
+                        1 WHERE Username = \
+                        '{}'".format(str(session['username'])))
                     mysqlConn.commit()
                     mysqlConnCursor.close()
                     mysqlConn.close()
-                    return render_template('home.html', username=session['username'])
+                    return render_template('home.html', \
+                        username=session['username'])
         if request.method == 'POST':
             target = os.path.join(APP_ROOT, "static")
             link = request.form.get('linkupload', None)
