@@ -72,11 +72,11 @@ def test_act6_ssrf():
     login = session.post("http://localhost:5000/login", data=credentials)
     assert login.status_code == 200 and "Welcome" in login.text
 
-    ssrf = session.get("http://localhost:5000/upload?linkupload=http://localhost:5000/ssrf.mp4")
+    ssrf = session.post("http://localhost:5000/upload?linkupload=http://localhost:5000/static/ssrf.mp4")
     assert ssrf.status_code == 200
 
-    video_check = session.get()
-
+    video_check = session.get("http://localhost:5000/vids/ssrf.mp4")
+    assert video_check.status_code == 200
 
 
 def test_act7_command_injection():
