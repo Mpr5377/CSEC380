@@ -24,20 +24,23 @@ def test_act3_authentication3():
 
 
 def test_act4_content():
-    pass
-
-    # TODO
     # Logs into the account successfully
+    session = requests.session()
+    credentials = {'username': 'admin', 'password': 'admin'}
+    login = session.post("http://localhost:5000/login", data=credentials)
+    assert login.status_code == 200 and "Welcome" in login.text
 
-    # TODO
     # Uploads a new video
-
-    # TODO
+    file = {'file': open("Test_Videos/SampleVideo_1280x720_1mb.mp4", "rb")}
+    file_upload = session.post("http://localhost:5000/upload", files=file)
+    assert file_upload.status_code == 200
     # Access/Make sure video exists
+    video_check = session.get("http://localhost:5000/vids/SampleVideo_1280x720_1mb.mp4")
+    assert video_check.status_code == 200
 
-    # TODO
     # Deletes the video
-
+    delete_video = session.get("http://localhost:5000/del/1")
+    assert delete_video.status_code == 200
 
 def test_act5_sql_injection():
     pass
