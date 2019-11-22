@@ -101,7 +101,7 @@ def upload():
                         "INSERT INTO video(UID, \
                         VideoTitle, VideoOwner, VideoURL, DateUploaded) \
                         VALUES \
-                        ('{}', '{}', '{}', '{}', '{}')".format(UID[0], \
+                        ('{}', '{}', '{}', '{}', '{}')".format(UID[0],
                         localfile, str(destination), session['username'],
                         datetime.datetime.now().strftime('%Y-%m-%d'))
                     )
@@ -250,7 +250,6 @@ def login():
         return invalid_password()
     except:
         home()
-
 
 
 @app.route("/logout", methods=['GET', 'POST'])
