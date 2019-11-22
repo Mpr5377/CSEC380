@@ -66,9 +66,17 @@ def test_act5_blind_sql_injection():
 
 
 def test_act6_ssrf():
-    pass
-    # TODO
-    # Vulnerable to SSRF
+    # Logs into the account successfully
+    session = requests.session()
+    credentials = {'username': 'admin', 'password': 'admin'}
+    login = session.post("http://localhost:5000/login", data=credentials)
+    assert login.status_code == 200 and "Welcome" in login.text
+
+    ssrf = session.get("http://localhost:5000/upload?linkupload=http://localhost:5000/ssrf.mp4")
+    assert ssrf.status_code == 200
+
+    video_check = session.get()
+
 
 
 def test_act7_command_injection():
