@@ -1,5 +1,5 @@
 from flask import Flask, flash, jsonify, render_template, request,\
-session, redirect, url_for
+ session, redirect, url_for
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -45,12 +45,14 @@ cors = CORS(app)
 user2 = 'admin2'
 user2hashedpass = generate_password_hash('admin2')
 mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, \
-    CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user2, \
-        user2hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
+    CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user2,
+                         user2hashedpass, \
+                         datetime.datetime.now().strftime('%Y-%m-%d')))
 user1 = 'admin'
 user1hashedpass = generate_password_hash('admin')
 mysqlConnCursor.execute("INSERT INTO users(Username, HashedPass, VideoCount, \
-    CreationDate) VALUES ('{}', '{}', 0, '{}')".format(user1, \
+                       CreationDate) VALUES ('{}', '{}', \
+                       0, '{}')".format(user1, \
         user1hashedpass, datetime.datetime.now().strftime('%Y-%m-%d')))
 mysqlConnCursor.close()
 mysqlConn.commit()
@@ -116,44 +118,62 @@ def upload():
                 with open(destination, 'wb') as f:
                     if not localfile.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
-                        return render_template('upload.html', username=session['username'])
+                        return render_template('upload.html', \
+                            username=session['username'])
                     destination = "/".join([target, localfile])
                     shutil.copyfileobj(r.raw, f)
-                    mysqlConnCursor.execute("SELECT UID FROM users WHERE Username='{}'".format((session['username'])))
+                    mysqlConnCursor.execute("SELECT UID FROM users \
+                        WHERE Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
-                    mysqlConnCursor.execute("INSERT INTO video(UID, VideoTitle, VideoOwner, VideoURL, DateUploaded) VALUES \
-                            ('{}', '{}', '{}', '{}', '{}')".format(UID[0], localfile, \
-                                                                   str(destination), session['username'],
-                                                                   datetime.datetime.now().strftime('%Y-%m-%d')))
-                    mysqlConnCursor.execute("UPDATE users SET VideoCount = VideoCount + \
-                            1 WHERE Username = '{}'".format(str(session['username'])))
+                    mysqlConnCursor.execute("INSERT \
+                        INTO video(UID, VideoTitle, VideoOwner, \
+                        VideoURL, DateUploaded) VALUES \
+                            ('{}', '{}', '{}', '{}', '{}')".format(UID[0], \
+                                localfile, \
+                                str(destination), session['username'],
+                                datetime.datetime.now().strftime('%Y-%m-%d')))
+                    mysqlConnCursor.execute("UPDATE users SET \
+                        VideoCount = VideoCount + \
+                            1 WHERE Username = \
+                            '{}'".format(str(session['username'])))
                     mysqlConn.commit()
                     mysqlConnCursor.close()
                     mysqlConn.close()
-                    return render_template('home.html', username=session['username'])
+                    return render_template('home.html', \
+                        username=session['username'])
             else:
                 for f in request.files.getlist("file"):
                     filename = f.filename
                     if not filename.endswith(".mp4"):
                         flash("Please upload a file with .mp4 extension.")
-                        return render_template('upload.html', username=session['username'])
+                        return render_template('upload.html', \
+                            username=session['username'])
                     destination = "/".join([target, filename])
                     f.save(destination)
-                    mysqlConnCursor.execute("SELECT UID FROM users WHERE Username='{}'".format((session['username'])))
+                    mysqlConnCursor.execute("SELECT UID FROM \
+                    users WHERE Username='{}'".format((session['username'])))
                     UID = mysqlConnCursor.fetchone()
-                    mysqlConnCursor.execute("INSERT INTO video(UID, VideoTitle, VideoURL, VideoOwner, DateUploaded) VALUES \
-                            ('{}', '{}', '{}', '{}', '{}')".format(UID[0], filename, \
-                                                                   str(destination), session['username'],
-                                                                   datetime.datetime.now().strftime('%Y-%m-%d')))
-                    mysqlConnCursor.execute("UPDATE users SET VideoCount = VideoCount + \
-                            1 WHERE Username = '{}'".format(str(session['username'])))
+                    mysqlConnCursor.execute("INSERT INTO \
+                        video(UID, VideoTitle, VideoURL, \
+                        VideoOwner, DateUploaded) VALUES \
+                            ('{}', '{}', '{}', '{}', \
+                            '{}')".format(UID[0], filename, \
+                            str(destination), session['username'],
+                            datetime.datetime.now().strftime('%Y-%m-%d')))
+                    mysqlConnCursor.execute("UPDATE users SET \
+                        VideoCount = VideoCount + \
+                            1 WHERE \
+                            Username = '{}'".format(\
+                                str(session['username'])))
                     mysqlConn.commit()
                     mysqlConnCursor.close()
                     mysqlConn.close()
-                    return render_template('upload.html', username=session['username'])
+                    return render_template('upload.html', \
+                        username=session['username'])
         mysqlConnCursor.close()
         mysqlConn.close()
-        return render_template('upload.html', username=session['username'])
+        return render_template('upload.html', \
+            username=session['username'])
     else:
         mysqlConnCursor.close()
         mysqlConn.close()
@@ -183,13 +203,16 @@ def login():
         username = request.form['username']
         password = request.form['password']
         hashedpass = generate_password_hash(password)
-        q = "SELECT HashedPass FROM users WHERE Username=" + "'" + str(username) + "'"
+        q = "SELECT HashedPass FROM users WHERE Username=" + \
+        "'" + str(username) + "'"
         mysqlConnCursor.execute(q)
         userpass = mysqlConnCursor.fetchone()
-        q = "SELECT Username FROM users WHERE Username=" + "'" + str(username) + "'"
+        q = "SELECT Username FROM users WHERE Username=" + \
+        "'" + str(username) + "'"
         mysqlConnCursor.execute(q)
         username = mysqlConnCursor.fetchone()
-        username = str(username).replace('(','').replace(')','').replace("'",'').replace(" ",'').replace(",",'')
+        username = str(username).replace('(','').\
+        replace(')','').replace("'",'').replace(" ",'').replace(",",'')
         mysqlConnCursor.close()
         mysqlConn.close()
         if userpass == None:
